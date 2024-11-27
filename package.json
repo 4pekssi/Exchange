@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "name": "kyrsa",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000R\u0000b\u0000d\u0000d\u0000k\u0000\r\u0000 \u0000#\u0000 \u0000R\u0000b\u0000d\u0000d\u0000k\u0000\r\u0000 \u0000",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

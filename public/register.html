@@ -1,0 +1,96 @@
+<!-- public/register.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация</title>
+  <link rel="stylesheet" href="/css/rl.css">
+</head>
+<body>
+  <div class="form-container">
+    <h1>Регистрация</h1>
+    <form id="registerForm">
+      <label for="username">Имя пользователя:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Пароль:</label>
+      <input type="password" id="password" name="password" required>
+
+      <label for="confirmPassword">Подтвердите пароль:</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p>Уже есть аккаунт? <a href="/login">Войти</a></p>
+    <button onclick="window.history.back()">Назад</button>
+    <div id="messageDiv"></div>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById('registerForm');
+    const messageDiv = document.getElementById('messageDiv');
+
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Проверка совпадения паролей
+      if (password !== confirmPassword) {
+        messageDiv.innerHTML = '<p class="error">Пароли не совпадают.</p>';
+        return;
+      }
+
+      // Проверка сложности пароля
+      const passwordError = validatePassword(password);
+      if (passwordError) {
+        messageDiv.innerHTML = `<p class="error">${passwordError}</p>`;
+        return;
+      }
+
+      // Отправка данных на сервер
+      fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password, confirmPassword })
+      })
+      .then(response => response.json())
+      .then(data => {
+        messageDiv.innerHTML = '';
+
+        if (data.error) {
+          messageDiv.innerHTML = `<p class="error">${data.error}</p>`;
+        } else {
+          messageDiv.innerHTML = `<p class="success">${data.message}</p>`;
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 2000);
+        }
+      })
+      .catch(error => {
+        console.error('Ошибка при регистрации:', error);
+        messageDiv.innerHTML = `<p class="error">Ошибка при регистрации. Попробуйте снова позже.</p>`;
+      });
+    });
+
+    // Функция для проверки сложности пароля
+    function validatePassword(password) {
+      const minLength = 6;
+      const hasLetters = /[A-Za-z]/.test(password);
+      const hasNumbers = /[0-9]/.test(password);
+
+      if (password.length < minLength) {
+        return 'Пароль должен быть не менее ' + minLength + ' символов.';
+      }
+      if (!hasLetters || !hasNumbers) {
+        return 'Пароль должен содержать буквы и цифры.';
+      }
+      return '';
+    }
+  </script>
+</body>
+</html>
